@@ -3,17 +3,19 @@ A Python 3 script based on clang which generates a call graph from a given C++ c
 
 ## Installation
 
-If you use Ubuntu or other linux operator system, install **libclang-dev(version 14)** first.
+On Ubuntu, install **libclang 14** to match the Python bindings pinned in `pyproject.toml`. The unversioned `libclang-dev` package may install a different major version.
 
-```
-apt install libclang-dev
+```bash
+sudo apt install libclang-14-dev python3-venv
 ```
 
 Clone the repository, navigate to the repository folder and install it as a Python package:
 ```
 git clone https://github.com/LiuYinCarl/clang-callgraph.git
 cd ./clang-callgraph
-pip install .
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install .
 ```
 
 ## screenshot
@@ -32,7 +34,7 @@ cd cpython/
 
 ./configure
 
-# use bera to generate compile_commands.json
+# use Bear to generate compile_commands.json (install Bear first)
 bear -- make -j4
 
 clang-callgraph ./compile_commands.json
@@ -128,8 +130,9 @@ Understood `options` are:
 * `--cfg config_file`: Retrieve additional configuration from a config file.
 * `--lookup function_name`: Directly lookup the given function and print its callgraph
   instead of asking the user to type a function name.
+* `--library_path directory`: Directory containing `libclang-14.so`, if Clang's shared library is not found automatically.
 
-For more details look at the [example](#Example) provided.
+For more details look at the [Fast Usage Example](#fast-usage-example).
 
 ## Configuration File
 A configuration file can be used for options that don't depend on the source project to be analysed.
@@ -141,11 +144,7 @@ The format used is YAML and may contain the following entries :
 
 ## Dependencies
 This script is based on Python 3, therefore a compatible interpreter is needed.<br/>
-Clang is also needed, below here an example of the required packaged supposing Clang 14 is available on an Ubuntu installation, adapt the following depending on your distro and packages availability:
-```
-$ sudo apt install clang-14 libclang-14-dev
-$ pip install clang==14.0.0
-```
+The shared library must be Clang 14. Installing this package installs the matching `clang==14.0.0` Python bindings, along with Pygments and PyYAML; the system library is installed separately as shown above. On other distributions, use the equivalent Clang 14 packages.
 
 ## Generating compile_commands.json
 The `compile_commands.json` is a compilation database formatted in JSON, and contains details and flags for each compilation unit (.c/.cpp file) of your project.<br/>
